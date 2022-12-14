@@ -9,7 +9,7 @@ import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
 import com.xiaozhao.xiaozhaoserver.model.PersonFace;
 import com.xiaozhao.xiaozhaoserver.model.User;
-import com.xiaozhao.xiaozhaoserver.pojo.TencentPersonFaceInterfaceOtherRequestProperty;
+import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
@@ -49,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private PersonFaceMapper personFaceMapper;
 
     @Autowired
-    private TencentPersonFaceInterfaceOtherRequestProperty tencentPersonFaceInterfaceOtherRequestProperty;
+    private PublicTencentApiProperty publicTencentApiProperty;
 
     @Autowired
     private PersonFaceService personFaceService;
@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         try {
             // 发送请求
             createPersonResponse = TencentApiUtils.executeIciClientRequest(createPersonRequest,
-                    CreatePersonResponse.class, tencentPersonFaceInterfaceOtherRequestProperty);
+                    CreatePersonResponse.class, publicTencentApiProperty);
         } catch (TencentCloudSDKException e) {
             throw new RuntimeException(e);
         }
@@ -151,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     deleteFaceRequest.setFaceIds(new String[]{personFace.getFaceId()});
                     try {
                         TencentApiUtils.executeIciClientRequest(deleteFaceRequest, DeleteFaceResponse.class,
-                                tencentPersonFaceInterfaceOtherRequestProperty);
+                                publicTencentApiProperty);
                     } catch (TencentCloudSDKException e) {
                         throw new RuntimeException(e);
                     }
@@ -169,7 +169,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 为人员添加一张人脸
             CreateFaceRequest createFaceRequest = new CreateFaceRequest();
             createFaceRequest.setPersonId(similarPersonId);
-            createFaceRequest.setImages(new String[]{imageBase64Str});
+            createFaceRequest.setUrls(new String[]{imageUrl});
             personFaceService.save(createFaceRequest, personFaceScore);
             return user;
         }

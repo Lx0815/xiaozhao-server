@@ -1,6 +1,8 @@
 spring:
   mvc:
     pathmatch:
+      # https://doc.xiaominfo.com/docs/quick-start
+      # 如果开发者使用的是Knife4j 2.x版本，并且Spring Boot版本高于2.4,那么需要在Spring Boot的yml文件中做如下配置：
       matching-strategy: ANT_PATH_MATCHER
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,16 +18,11 @@ decorator:
     p6spy:
       enable-logging: true
       logging: slf4j
-tencent-person-face-interface-other-request-property:
-  secret-id: AKIDwjJfngNr66tRl00mQp0wfARFwQhlcPzU
-  secret-key: kIdjbEfsqfJUSBgy3uXw88wXxBC0d5KN
-  domain-name: iai.tencentcloudapi.com
+tencent:
+  domainName: iai.tencentcloudapi.com
   region: ap-guangzhou
 qiniu:
-  access-key: ErABU8Xnu4tHdUN2-Pw8MMGOaY-FtXBxIKurQwjt
-  secret-key: Ay_Z7B6Uqqg1nUPv-YEsliOf93zEhVcnVXPZjtb-
   bucket: trade-server
-  access-root-path: http://${qiniu.domain}/xiaozhao/person-face/
   region: huadongzhejiang2
   domain: www.lyggwsp.work
-  accelerate-upload-domain: upload-cn-east-2.qiniup.com
+  accelerateUploadDomain: upload-cn-east-2.qiniup.com

@@ -9,7 +9,7 @@ import com.xiaozhao.xiaozhaoserver.mapper.ClientMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonGroupMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.TestRecordMapper;
 import com.xiaozhao.xiaozhaoserver.model.*;
-import com.xiaozhao.xiaozhaoserver.pojo.TencentPersonFaceInterfaceOtherRequestProperty;
+import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
@@ -49,7 +49,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     private UserService userService;
 
     @Autowired
-    private TencentPersonFaceInterfaceOtherRequestProperty tencentPersonFaceInterfaceOtherRequestProperty;
+    private PublicTencentApiProperty publicTencentApiProperty;
 
     @Autowired
     private PersonFaceService personFaceService;
@@ -80,7 +80,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         createGroupRequest.setGroupExDescriptions(new String[]{String.format("经度：%f，纬度：%f", clientLocation.getLongitude(), clientLocation.getLatitude())});
         try {
             TencentApiUtils.executeIciClientRequest(createGroupRequest, CreateGroupResponse.class,
-                    tencentPersonFaceInterfaceOtherRequestProperty);
+                    publicTencentApiProperty);
         } catch (TencentCloudSDKException e) {
             throw new RuntimeException("创建人员库失败", e);
         }

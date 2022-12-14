@@ -1,6 +1,10 @@
 package com.xiaozhao.xiaozhaoserver.config.qiniu;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,56 +16,44 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@ConfigurationProperties(prefix = "qiniu", ignoreInvalidFields = true)
 public class QiNiuProperties {
 
-    private String accessKey = "qiniu";
+    @Value("${qiniu.accessKeyEnvName:#{ null }}")
+    @Setter
+    private String accessKeyEnvName;
+
+    @Value("${qiniu.secretKeyEnvName:#{ null }}")
+    @Setter
+    private String secretKeyEnvName;
+
+    @Value("${qiniu.bucket}")
+    @Getter
+    @Setter
+    private String bucket;
+
+    @Value("${qiniu.region}")
+    @Getter
+    @Setter
+    private String region;
+
+    @Value("${qiniu.domain}")
+    @Setter
+    private String domain;
+
+    @Value("${qiniu.retryMaxCount:#{ 3 }}")
+    @Getter
+    @Setter
+    private int retryMaxCount;
+
+    @Value("${qiniu.accelerateUploadDomain}")
+    @Getter
+    @Setter
+    private String accelerateUploadDomain;
+
+    private String accessKey;
 
     private String secretKey;
 
-    private String bucket;
-
-    private String region;
-
-    private String domain;
-
-    private String accessRootPath;
-
-    private int retryMaxCount = 3;
-
-    private String accelerateUploadDomain;
-
-    public String getAccessKey() {
-        return accessKey;
-    }
-
-    public void setAccessKey(String accessKey) {
-        this.accessKey = accessKey;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
 
     public String getDomain() {
         if (! "".equals(domain) && ! domain.endsWith("/")) {
@@ -70,31 +62,31 @@ public class QiNiuProperties {
         return domain;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public String getAccessKeyEnvName() {
+        if (StringUtils.isBlank(accessKeyEnvName)) {
+            accessKeyEnvName = Constants.QINIU_ACCESS_KEY_ENV;
+        }
+        return accessKeyEnvName;
     }
 
-    public String getAccessRootPath() {
-        return accessRootPath;
+    public String getSecretKeyEnvName() {
+        if (StringUtils.isBlank(secretKeyEnvName)) {
+            secretKeyEnvName = Constants.QINIU_SECRET_KEY_ENV;
+        }
+        return secretKeyEnvName;
     }
 
-    public void setAccessRootPath(String accessRootPath) {
-        this.accessRootPath = accessRootPath;
+    public String getAccessKey() {
+        if (StringUtils.isBlank(accessKey)) {
+            accessKey = System.getenv(getAccessKeyEnvName());
+        }
+        return accessKey;
     }
 
-    public int getRetryMaxCount() {
-        return retryMaxCount;
-    }
-
-    public void setRetryMaxCount(int retryMaxCount) {
-        this.retryMaxCount = retryMaxCount;
-    }
-
-    public String getAccelerateUploadDomain() {
-        return accelerateUploadDomain;
-    }
-
-    public void setAccelerateUploadDomain(String accelerateUploadDomain) {
-        this.accelerateUploadDomain = accelerateUploadDomain;
+    public String getSecretKey() {
+        if (StringUtils.isBlank(secretKey)) {
+            secretKey = System.getenv(getSecretKeyEnvName());
+        }
+        return secretKey;
     }
 }

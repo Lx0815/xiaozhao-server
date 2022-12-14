@@ -14,7 +14,7 @@ import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
 import com.xiaozhao.xiaozhaoserver.model.PersonFace;
 import com.xiaozhao.xiaozhaoserver.model.User;
-import com.xiaozhao.xiaozhaoserver.pojo.TencentPersonFaceInterfaceOtherRequestProperty;
+import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.utils.TencentApiUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ import org.springframework.util.ObjectUtils;
 public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonFace> implements PersonFaceService {
 
     @Autowired
-    private TencentPersonFaceInterfaceOtherRequestProperty tencentPersonFaceInterfaceOtherRequestProperty;
+    private PublicTencentApiProperty publicTencentApiProperty;
 
     @Autowired
     private UserMapper userMapper;
@@ -56,7 +56,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
             throw new BadParameterException("CreatePersonRequest 中至少需要包含 Image 和 Url 其中之一");
         try {
             return TencentApiUtils.executeIciClientRequest(detectFaceRequest,
-                    DetectFaceResponse.class, tencentPersonFaceInterfaceOtherRequestProperty);
+                    DetectFaceResponse.class, publicTencentApiProperty);
         } catch (TencentCloudSDKException e) {
             if (ObjectUtils.nullSafeEquals(e.getErrorCode(), IaiErrorCode.INVALIDPARAMETERVALUE_NOFACEINPHOTO.getValue())) {
                 throw new NoFaceInPhotoException(e);
@@ -73,7 +73,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
         CreateFaceResponse createFaceResponse;
         try {
             createFaceResponse = TencentApiUtils.executeIciClientRequest(createFaceRequest, CreateFaceResponse.class,
-                    tencentPersonFaceInterfaceOtherRequestProperty);
+                    publicTencentApiProperty);
         } catch (TencentCloudSDKException e) {
             throw new RuntimeException(e);
         }
@@ -90,7 +90,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
         PersonFace personFace = new PersonFace()
                 .setUserId(user.getId())
                 .setFaceId(faceId)
-                .setImageUrl(createFaceRequest.getImages()[0])
+                .setImageUrl(createFaceRequest.getUrls()[0])
                 .setImageQualityScore(personScore);
         int rows = personFaceMapper.insert(personFace);
         if (rows != 1) throw new RuntimeException("添加人脸失败");

@@ -38,8 +38,8 @@ public class User {
     @ApiModelProperty("人员性别")
     private String gender;
 
-    @ApiModelProperty("人员真实姓名")
-    private String realName;
+    @ApiModelProperty("人员真实年龄")
+    private String realAge;
 
     @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)

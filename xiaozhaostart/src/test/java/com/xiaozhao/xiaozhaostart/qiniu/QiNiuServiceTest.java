@@ -1,6 +1,8 @@
 package com.xiaozhao.xiaozhaostart.qiniu;
 
+import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,7 @@ import java.util.List;
  * @modify:
  */
 
+@Slf4j
 @SpringBootTest
 @SpringJUnitWebConfig
 public class QiNiuServiceTest {
@@ -40,7 +43,7 @@ public class QiNiuServiceTest {
         BASE64Encoder encoder = new BASE64Encoder();
         String encode = encoder.encode(bys);
         list.add(encode);
-        List<String> stringList = qiNiuYunService.saveMultipartBase64ImageList(list, "");
+        List<String> stringList = qiNiuYunService.saveMultipartBase64ImageList(list, Constants.QINIU_DEFAULT_DIRECTORY);
         System.out.println(stringList);
     }
 

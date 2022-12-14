@@ -122,8 +122,8 @@ public class QiNiuYunServiceImpl implements QiNiuYunService {
         try {
             for (String base64 : base64List) {
                 // 去掉前缀 data:image/jpg;base64,
-                if (base64.startsWith("data:image/jpg;base64,"))
-                    base64 = base64.substring(22);
+                if (base64.startsWith("data:"))
+                    base64 = base64.substring(base64.indexOf(",") + 1);
                 String fileName = UUID.randomUUID().toString();
                 path = sb.append(directory).append(fileName).append(".jpg").toString();
 
