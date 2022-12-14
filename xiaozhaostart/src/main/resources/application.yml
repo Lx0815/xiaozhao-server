@@ -17,8 +17,8 @@ decorator:
       enable-logging: true
       logging: slf4j
 tencent-person-face-interface-other-request-property:
-  secret-id: AKIDwjJfngNr66tRl00mQp0wfARFwQhlcPzU
-  secret-key: kIdjbEfsqfJUSBgy3uXw88wXxBC0d5KN
+  secret-id: ***
+  secret-key: ***
   domain-name: iai.tencentcloudapi.com
   region: ap-guangzhou
 qiniu:
