@@ -26,4 +26,13 @@ public class ResponseObject {
         this.data = null;
         this.message = null;
     }
+
+    @Override
+    public String toString() {
+        return "\n" +
+                "ErrorCode: \t" + code + "\n" +
+                "data: \t\t" + data + "\n" +
+                "message: \t" + message + "\n" +
+                "\n";
+    }
 }

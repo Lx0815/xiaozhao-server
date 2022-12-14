@@ -8,21 +8,24 @@ import com.tencentcloudapi.iai.v20200303.models.CreateFaceRequest;
 import com.tencentcloudapi.iai.v20200303.models.CreateFaceResponse;
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceRequest;
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceResponse;
+import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.exception.NoFaceInPhotoException;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
 import com.xiaozhao.xiaozhaoserver.model.PersonFace;
 import com.xiaozhao.xiaozhaoserver.model.User;
-import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.utils.TencentApiUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StopWatch;
+
+import java.util.HashMap;
 
 /**
  * @description:
@@ -32,6 +35,7 @@ import org.springframework.util.ObjectUtils;
  * @modify:
  */
 
+@Slf4j
 @Service
 @Transactional
 public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonFace> implements PersonFaceService {
@@ -54,14 +58,23 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
         detectFaceRequest.setNeedFaceAttributes(1L);
         if (StringUtils.isBlank(detectFaceRequest.getImage()) && StringUtils.isBlank(detectFaceRequest.getUrl()))
             throw new BadParameterException("CreatePersonRequest 中至少需要包含 Image 和 Url 其中之一");
+        HashMap<String, String> map = new HashMap<>();
+        detectFaceRequest.toMap(map, "");
+        StopWatch stopWatch = new StopWatch();
         try {
-            return TencentApiUtils.executeIciClientRequest(detectFaceRequest,
+            log.info("开始进行人脸检测与分析");
+            stopWatch.start();
+            DetectFaceResponse detectFaceResponse = TencentApiUtils.executeIciClientRequest(detectFaceRequest,
                     DetectFaceResponse.class, publicTencentApiProperty);
+            stopWatch.stop();
+            log.info("人脸检测与分析成功，耗时：" + stopWatch.getTotalTimeMillis() + " ms");
+            return detectFaceResponse;
         } catch (TencentCloudSDKException e) {
+            log.error("人脸检测与分析失败，本次请求对象为：\n" + map);
             if (ObjectUtils.nullSafeEquals(e.getErrorCode(), IaiErrorCode.INVALIDPARAMETERVALUE_NOFACEINPHOTO.getValue())) {
                 throw new NoFaceInPhotoException(e);
             }
-            throw new RuntimeException(e);
+            throw new BadParameterException(e);
         }
     }
 
@@ -69,19 +82,26 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
      * {@inheritDoc}
      */
     public void save(CreateFaceRequest createFaceRequest, Long personScore) {
-
+        log.info("准备开始保存人脸");
+        HashMap<String, String> map = new HashMap<>();
+        createFaceRequest.toMap(map, "");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         CreateFaceResponse createFaceResponse;
         try {
             createFaceResponse = TencentApiUtils.executeIciClientRequest(createFaceRequest, CreateFaceResponse.class,
                     publicTencentApiProperty);
+            stopWatch.stop();
         } catch (TencentCloudSDKException e) {
-            throw new RuntimeException(e);
+            log.error("添加人脸失败，本次请求对象为：\n" + map);
+            throw new BadParameterException(e);
         }
-        Assert.notNull(createFaceResponse, "添加人脸失败");
+        if (createFaceResponse.getSucFaceNum() != 1) {
+            throw new BadParameterException("添加人脸失败");
+        }
+        log.info("保存成功，耗时：" + stopWatch.getTotalTimeMillis() + "ms");
 
-        if (createFaceResponse.getSucFaceNum() != 1)
-            throw new RuntimeException("添加人脸失败");
-
+        log.info("准备插入 personFace");
         String faceId = createFaceResponse.getSucFaceIds()[0];
         User user = userMapper.selectOne(
                 new QueryWrapper<User>()
@@ -92,8 +112,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
                 .setFaceId(faceId)
                 .setImageUrl(createFaceRequest.getUrls()[0])
                 .setImageQualityScore(personScore);
-        int rows = personFaceMapper.insert(personFace);
-        if (rows != 1) throw new RuntimeException("添加人脸失败");
+        personFaceMapper.insert(personFace);
     }
 
     /**

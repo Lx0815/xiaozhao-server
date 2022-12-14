@@ -2,6 +2,7 @@ package com.xiaozhao.xiaozhaoserver.config.qiniu;
 
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ import java.security.NoSuchProviderException;
  * @modify:
  */
 
-
+@Slf4j
 @Configuration
 public class QiNiuConfig {
 
@@ -32,6 +33,8 @@ public class QiNiuConfig {
     @Bean
     public com.qiniu.storage.Configuration qiNiuConfiguration() {
         try {
+            log.info("准备开始读取 QiNiuProperties: ");
+            log.info(qiNiuProperties.toString());
             com.qiniu.storage.Configuration configuration = new com.qiniu.storage.Configuration(RegionFactoryBuilder
                     .builder(qiNiuProperties.getRegion())
                     .createRegion());

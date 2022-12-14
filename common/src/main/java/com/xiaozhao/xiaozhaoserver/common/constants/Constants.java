@@ -60,6 +60,7 @@ public class Constants {
      * 响应描述
      */
     public static final String DATA_ALREADY_EXISTS = "数据已存在";
+    public static final String RESOURCE_NOT_FOUND = "资源不存在";
 
     private Constants() {}
 
@@ -71,5 +72,5 @@ public class Constants {
 
     public static final String FACE_DETECTION_SUCCEEDED = "人脸检测成功";
 
-    public static final String MISSING_PARAMETERS_EXCEPTION = "缺失参数异常";
+    public static final String ERROR_PARAMETERS_EXCEPTION = "错误参数异常";
 }

@@ -5,20 +5,20 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import com.xiaozhao.xiaozhaoserver.config.qiniu.QiNiuProperties;
+import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * @description:
@@ -120,25 +120,34 @@ public class QiNiuYunServiceImpl implements QiNiuYunService {
         String accessPath;
         List<String> accessPathList = new LinkedList<>();
         try {
+            log.info(LocalDateTime.now() + "  准备开始上传文件到七牛云存储");
+            log.info("基础目录为：" + directory);
+            StopWatch stopWatch = new StopWatch();
             for (String base64 : base64List) {
+                String fileName = UUID.randomUUID().toString();
+                stopWatch.start(fileName + ".jpg");
                 // 去掉前缀 data:image/jpg;base64,
                 if (base64.startsWith("data:"))
                     base64 = base64.substring(base64.indexOf(",") + 1);
-                String fileName = UUID.randomUUID().toString();
+
                 path = sb.append(directory).append(fileName).append(".jpg").toString();
 
+                log.info("开始上传文件：" + path);
                 Response response = uploadManager.put(decoder.decodeBuffer(base64), path, getUploadToken());
 
                 if (!response.isOK()) {
-                    throw new RuntimeException("上传文件失败");
+                    throw new BadParameterException("上传文件失败");
                 }
 
                 sb.delete(0, sb.length());
                 accessPath = sb.append("http://").append(qiNiuProperties.getDomain()).append(path).toString();
+                log.info("成功上传文件：" + accessPath);
                 accessPathList.add(accessPath);
                 sb.delete(0, sb.length());
 
+                stopWatch.stop();
             }
+            log.info(String.format("上传结束，本次共计上传 %d 个文件，耗时：%d ms", stopWatch.getTaskCount(), stopWatch.getTotalTimeMillis()));
             return accessPathList;
         } catch (IOException e) {
             throw new RuntimeException(e);

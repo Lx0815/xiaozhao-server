@@ -30,5 +30,7 @@ public interface ClientService extends IService<Client> {
      * @param groupId 人员库信息，新增的人员将存储在此人员库中
      * @return 本次测试记录
      */
-    TestRecord analyzeAndSaveFaceInformation(DetectFaceRequest detectFaceRequest, String groupId);
+    TestRecord analyzeAndSaveFaceInformation(DetectFaceRequest detectFaceRequest, Client client, String groupId);
+
+    Client updateLastUploadDateTime(String personGroupId);
 }

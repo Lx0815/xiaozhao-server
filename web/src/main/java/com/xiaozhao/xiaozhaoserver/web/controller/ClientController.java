@@ -2,11 +2,13 @@ package com.xiaozhao.xiaozhaoserver.web.controller;
 
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceRequest;
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
+import com.xiaozhao.xiaozhaoserver.model.Client;
 import com.xiaozhao.xiaozhaoserver.model.ClientLocation;
 import com.xiaozhao.xiaozhaoserver.model.TestRecord;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
 import com.xiaozhao.xiaozhaoserver.web.response.ResponseCode;
+import com.xiaozhao.xiaozhaoserver.web.response.ResponseObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ public class ClientController {
     @Autowired
     private ResponseObjectPool responseObjectPool;
 
-    @ApiOperation("初始化人员库，使客户端与人员库绑定")
+    @ApiOperation("初始化人员库")
     @PostMapping("/person-group")
     public Object initPersonGroup(@RequestBody ClientLocation clientLocation, HttpServletRequest request,
                                   HttpServletResponse response) {
@@ -70,17 +72,22 @@ public class ClientController {
     @PostMapping("/person")
     public Object addPerson(@RequestBody DetectFaceRequest detectFaceRequest, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if (ObjectUtils.isEmpty(cookies))
-            return responseObjectPool.createResponse(ResponseCode.MISSING_PARAMETER_EXCEPTION, "检测到设备没有初始化，请先进行初始化");
+        ResponseObject response = responseObjectPool.createResponse(ResponseCode.ERROR_PARAMETER_EXCEPTION, "检测到设备没有初始化，请先进行初始化");
+        if (ObjectUtils.isEmpty(cookies)) {
+            log.error(response.toString());
+            return response;
+        }
         String personGroupId = null;
         for (Cookie cookie : cookies) {
             if (Constants.PERSON_GROUP_ID_COOKIE_KEY.equals(cookie.getName())) {
                 personGroupId = cookie.getValue();
                 if (ObjectUtils.isEmpty(personGroupId))
-                    return responseObjectPool.createResponse(ResponseCode.MISSING_PARAMETER_EXCEPTION, "检测到设备没有初始化，请先进行初始化");
+                    return response;
             }
         }
-        TestRecord testRecord = clientService.analyzeAndSaveFaceInformation(detectFaceRequest, personGroupId);
+        log.info("准备更新 client.last_upload_date_time");
+        Client client = clientService.updateLastUploadDateTime(personGroupId);
+        TestRecord testRecord = clientService.analyzeAndSaveFaceInformation(detectFaceRequest, client, personGroupId);
 
         return responseObjectPool.createSuccessResponse(testRecord);
     }
