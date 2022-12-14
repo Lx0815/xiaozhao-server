@@ -1,0 +1,31 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:1103/xiaozhao?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      logging: slf4j
+tencent-person-face-interface-other-request-property:
+  secret-id: AKIDwjJfngNr66tRl00mQp0wfARFwQhlcPzU
+  secret-key: kIdjbEfsqfJUSBgy3uXw88wXxBC0d5KN
+  domain-name: iai.tencentcloudapi.com
+  region: ap-guangzhou
+qiniu:
+  access-key: ErABU8Xnu4tHdUN2-Pw8MMGOaY-FtXBxIKurQwjt
+  secret-key: Ay_Z7B6Uqqg1nUPv-YEsliOf93zEhVcnVXPZjtb-
+  bucket: trade-server
+  access-root-path: http://${qiniu.domain}/xiaozhao/person-face/
+  region: huadongzhejiang2
+  domain: www.lyggwsp.work
+  accelerate-upload-domain: upload-cn-east-2.qiniup.com
