@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.configProp;
+package com.xiaozhao.xiaozhaoserver.service.configProp;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.config.qiniu;
+package com.xiaozhao.xiaozhaoserver.service.config.qiniu;
 
 import com.qiniu.storage.Region;
 

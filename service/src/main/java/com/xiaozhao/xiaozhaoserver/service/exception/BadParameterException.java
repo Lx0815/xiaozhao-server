@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.exception;
+package com.xiaozhao.xiaozhaoserver.service.exception;
 
 /**
  * @description:

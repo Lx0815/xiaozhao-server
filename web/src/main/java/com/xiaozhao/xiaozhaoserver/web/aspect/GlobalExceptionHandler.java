@@ -1,9 +1,10 @@
 package com.xiaozhao.xiaozhaoserver.web.aspect;
 
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
-import com.xiaozhao.xiaozhaoserver.exception.NoFaceInPhotoException;
-import com.xiaozhao.xiaozhaoserver.exception.ResourceNotFoundException;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.exception.NoFaceInPhotoException;
+import com.xiaozhao.xiaozhaoserver.service.exception.NotFoundPersonException;
+import com.xiaozhao.xiaozhaoserver.service.exception.ResourceNotFoundException;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,12 @@ public class GlobalExceptionHandler  {
     public Object handleBadParameterException(BadParameterException e) {
         e.printStackTrace();
         return responseObjectPool.createResponse(ERROR_PARAMETER_EXCEPTION, e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundPersonException.class)
+    public Object handleNotFoundPersonException(NotFoundPersonException e) {
+        e.printStackTrace();
+        return responseObjectPool.createResponse(NOT_FOUND_PERSON_EXCEPTION, Constants.NOT_FOUND_PERSON_EXCEPTION);
     }
 
 }

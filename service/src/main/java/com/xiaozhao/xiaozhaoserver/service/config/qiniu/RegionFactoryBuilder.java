@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.config.qiniu;
+package com.xiaozhao.xiaozhaoserver.service.config.qiniu;
 
 import java.security.NoSuchProviderException;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.dto;
+package com.xiaozhao.xiaozhaoserver.service.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

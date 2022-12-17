@@ -28,14 +28,20 @@ public class Client {
     @TableField(fill = FieldFill.INSERT)
     private String clientId;
 
-    @ApiModelProperty("映射到 client_location.id ")
-    private Integer locationId;
-
     @ApiModelProperty("人员库 ID（UUID）")
     private Integer personGroupId;
 
     @ApiModelProperty("上次上传时间")
     private LocalDateTime lastUploadDateTime;
+
+    @ApiModelProperty("经度")
+    private Double longitude;
+
+    @ApiModelProperty("纬度")
+    private Double latitude;
+
+    @ApiModelProperty("用户与客户端的距离")
+    private String distance;
 
     @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)

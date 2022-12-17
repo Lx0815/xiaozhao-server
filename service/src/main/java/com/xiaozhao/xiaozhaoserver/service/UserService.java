@@ -1,6 +1,7 @@
 package com.xiaozhao.xiaozhaoserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tencentcloudapi.iai.v20200303.models.SearchPersonsRequest;
 import com.xiaozhao.xiaozhaoserver.model.User;
 
 /**
@@ -21,5 +22,9 @@ public interface UserService extends IService<User> {
      * @return 返回新增的用户，或已存在的用户
      */
     User saveOneUser(String imageBase64Str, Long personFaceScore, String groupId);
+
+    User bindWechatAndPerson(SearchPersonsRequest searchPersonsRequest, Double longitude, Double latitude, Integer userId);
+
+    boolean isBind(User user);
 
 }

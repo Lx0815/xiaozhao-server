@@ -3,17 +3,23 @@ package com.xiaozhao.xiaozhaoserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.iai.v20200303.IaiErrorCode;
 import com.tencentcloudapi.iai.v20200303.models.*;
-import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
+import com.xiaozhao.xiaozhaoserver.model.Client;
 import com.xiaozhao.xiaozhaoserver.model.PersonFace;
 import com.xiaozhao.xiaozhaoserver.model.User;
+import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
-import com.xiaozhao.xiaozhaoserver.utils.TencentApiUtils;
+import com.xiaozhao.xiaozhaoserver.service.configProp.TencentApiPublicProperties;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.exception.NoFaceInPhotoException;
+import com.xiaozhao.xiaozhaoserver.service.exception.NotFoundPersonException;
+import com.xiaozhao.xiaozhaoserver.service.utils.TencentApiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +58,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private PersonFaceService personFaceService;
+
+    @Autowired
+    private ClientService clientService;
 
 
     /**
@@ -197,4 +206,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user;
     }
 
+    @Override
+    public User bindWechatAndPerson(SearchPersonsRequest searchPersonsRequest, Double longitude, Double latitude, Integer userId) {
+        SearchFacesResponse searchFacesResponse;
+        // 填充人员库参数
+        List<Client> clientList = clientService.listClintInScope(longitude, latitude, 50000);
+        searchPersonsRequest.setGroupIds(clientList.stream().map(Client::getClientId).toArray(String[]::new));
+        HashMap<String, String> map = new HashMap<>();
+        searchPersonsRequest.toMap(map, "");
+        try {
+            log.info("准备请求腾讯云 API 查找人员" );
+            searchFacesResponse = TencentApiUtils.executeIciClientRequest(searchPersonsRequest, SearchFacesResponse.class,
+                    tencentApiPublicProperties);
+        } catch (TencentCloudSDKException e) {
+            log.error("请求失败，本次请求对象为：\n" + map);
+            if (ObjectUtils.nullSafeEquals(e.getErrorCode(), IaiErrorCode.INVALIDPARAMETERVALUE_NOFACEINPHOTO.getValue())) {
+                throw new NoFaceInPhotoException(e);
+            }
+            throw new BadParameterException(e);
+        }
+        Result[] results = searchFacesResponse.getResults();
+        if (ObjectUtils.isEmpty(results)) throw new NotFoundPersonException(Constants.NOT_FOUND_PERSON_EXCEPTION);
+        Candidate[] candidates = results[0].getCandidates();
+        if (ObjectUtils.isEmpty(candidates)) throw new NotFoundPersonException(Constants.NOT_FOUND_PERSON_EXCEPTION);
+        // 获取最相似的一个人
+        String personId = candidates[0].getPersonId();
+        log.info("请求成功，获取到的 personId 为：" + personId);
+        User user1 = userMapper.selectOne(new QueryWrapper<User>().eq("person_id", personId));
+        if (ObjectUtils.isEmpty(user1)) throw new NotFoundPersonException(Constants.NOT_FOUND_PERSON_EXCEPTION);
+
+        log.info("准备合并 user");
+        User user2 = userMapper.selectById(userId);
+        user1.setOpenid(user2.getOpenid());
+        user1.setNickName(user2.getNickName());
+        user1.setRealGender(user2.getRealGender());
+        user1.setRealAge(user2.getRealAge());
+
+        userMapper.deleteById(user2.getId());
+        userMapper.updateById(user1);
+        log.info("合并 user 成功，合并后的 user 为" + user1);
+        return user1;
+    }
+
+    @Override
+    public boolean isBind(User user) {
+        return ObjectUtils.isEmpty(user.getPersonId());
+    }
 }

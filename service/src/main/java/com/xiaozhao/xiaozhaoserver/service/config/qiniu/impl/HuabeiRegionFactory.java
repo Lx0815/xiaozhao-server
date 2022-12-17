@@ -1,7 +1,7 @@
-package com.xiaozhao.xiaozhaoserver.config.qiniu.impl;
+package com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl;
 
 import com.qiniu.storage.Region;
-import com.xiaozhao.xiaozhaoserver.config.qiniu.RegionFactory;
+import com.xiaozhao.xiaozhaoserver.service.config.qiniu.RegionFactory;
 
 /**
  * @description:

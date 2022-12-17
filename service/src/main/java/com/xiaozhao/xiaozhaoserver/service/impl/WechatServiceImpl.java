@@ -1,16 +1,18 @@
 package com.xiaozhao.xiaozhaoserver.service.impl;
 
-import com.xiaozhao.xiaozhaoserver.configProp.Code2SessionRequestProperties;
-import com.xiaozhao.xiaozhaoserver.dto.Code2SessionResponse;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.xiaozhao.xiaozhaoserver.service.configProp.Code2SessionRequestProperties;
+import com.xiaozhao.xiaozhaoserver.service.dto.Code2SessionResponse;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
 import com.xiaozhao.xiaozhaoserver.model.User;
 import com.xiaozhao.xiaozhaoserver.service.WechatService;
-import com.xiaozhao.xiaozhaoserver.utils.HttpsUtils;
+import com.xiaozhao.xiaozhaoserver.service.utils.HttpsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @description:
@@ -43,11 +45,18 @@ public class WechatServiceImpl implements WechatService {
         }
 
         log.info("请求成功，响应对象为：" + code2SessionResponse);
-        log.info("准备插入 user");
-        User user = new User();
-        user.setOpenid(code2SessionResponse.getOpenid());
-        userMapper.insert(user);
-        log.info("插入成功。" + user);
+        // 判断用户是否曾经登录过
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("openid", code2SessionResponse.getOpenid()));
+        if (ObjectUtils.isEmpty(user)) {
+            // 用户不存在
+            log.info("准备插入 user");
+            user = new User();
+            user.setOpenid(code2SessionResponse.getOpenid());
+            userMapper.insert(user);
+            log.info("插入成功。" + user);
+
+        }
+        // 用户存在
         return user;
     }
 }

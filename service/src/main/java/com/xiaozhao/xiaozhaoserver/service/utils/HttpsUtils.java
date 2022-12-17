@@ -1,8 +1,8 @@
-package com.xiaozhao.xiaozhaoserver.utils;
+package com.xiaozhao.xiaozhaoserver.service.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;

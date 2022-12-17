@@ -1,8 +1,8 @@
-package com.xiaozhao.xiaozhaoserver.config.qiniu;
+package com.xiaozhao.xiaozhaoserver.service.config.qiniu;
 
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
-import com.xiaozhao.xiaozhaoserver.configProp.QiNiuProperties;
+import com.xiaozhao.xiaozhaoserver.service.configProp.QiNiuProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

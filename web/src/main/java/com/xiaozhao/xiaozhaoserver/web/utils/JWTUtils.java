@@ -10,7 +10,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import java.util.Objects;
 @Slf4j
 public class JWTUtils {
 
-    public static final String DEFAULT_JWT_SECRET_KEY_ENV = "JWT_SECRET_KEY";
+    public static final String DEFAULT_JWT_SECRET_KEY_ENV = "XIAO_ZHAO_DEFAULT_JWT_SECRET_KEY";
 
     private static final String JWT_SECRET_KEY = System.getenv(DEFAULT_JWT_SECRET_KEY_ENV);
 

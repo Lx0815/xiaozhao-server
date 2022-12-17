@@ -3,7 +3,6 @@ package com.xiaozhao.xiaozhaoserver.web.controller;
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceRequest;
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.model.Client;
-import com.xiaozhao.xiaozhaoserver.model.ClientLocation;
 import com.xiaozhao.xiaozhaoserver.model.TestRecord;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
@@ -14,10 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +41,7 @@ public class ClientController {
 
     @ApiOperation("初始化人员库")
     @PostMapping("/person_group")
-    public Object initPersonGroup(@RequestBody ClientLocation clientLocation, HttpServletRequest request,
+    public Object initPersonGroup(@RequestBody Client client, HttpServletRequest request,
                                   HttpServletResponse response) {
         // 查看 Cookie 中是否存在 人员库ID，若有则直接返回
         Cookie[] cookies = request.getCookies();
@@ -58,8 +54,8 @@ public class ClientController {
             }
         }
         log.info("开始初始化人员库");
-        log.info("clientLocation: " + clientLocation);
-        String personGroupId = clientService.initClient(clientLocation);
+        log.info("client: " + client);
+        String personGroupId = clientService.initClient(client);
         log.info("初始化完成，初始化的得到的 personGroupId: " + personGroupId);
         Cookie cookie = new Cookie(Constants.PERSON_GROUP_ID_COOKIE_KEY, personGroupId);
         cookie.setMaxAge(Constants.PERSON_GROUP_ID_COOKIE_MAX_AGE);
@@ -92,4 +88,11 @@ public class ClientController {
         return responseObjectPool.createSuccessResponse(testRecord);
     }
 
+    @GetMapping("/location/longitude/{longitude}/latitude/{latitude}/distance/{distance}")
+    public Object getClientsInScope(@PathVariable Double longitude,
+                                    @PathVariable Double latitude,
+                                    @PathVariable Integer distance) {
+
+        return responseObjectPool.createSuccessResponse(clientService.listClintInScope(longitude, latitude, distance));
+    }
 }

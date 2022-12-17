@@ -1,21 +1,24 @@
 package com.xiaozhao.xiaozhaoserver.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.iai.v20200303.models.*;
-import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
-import com.xiaozhao.xiaozhaoserver.exception.ResourceNotFoundException;
-import com.xiaozhao.xiaozhaoserver.mapper.ClientLocationMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.ClientMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonGroupMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.TestRecordMapper;
-import com.xiaozhao.xiaozhaoserver.model.*;
+import com.xiaozhao.xiaozhaoserver.model.Client;
+import com.xiaozhao.xiaozhaoserver.model.PersonGroup;
+import com.xiaozhao.xiaozhaoserver.model.TestRecord;
+import com.xiaozhao.xiaozhaoserver.model.User;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
-import com.xiaozhao.xiaozhaoserver.utils.TencentApiUtils;
+import com.xiaozhao.xiaozhaoserver.service.configProp.TencentApiPublicProperties;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.exception.ResourceNotFoundException;
+import com.xiaozhao.xiaozhaoserver.service.utils.TencentApiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,8 +43,6 @@ import java.util.UUID;
 @Transactional
 public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> implements ClientService {
 
-    @Autowired
-    private ClientLocationMapper clientLocationMapper;
 
     @Autowired
     private ClientMapper clientMapper;
@@ -64,16 +66,11 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
      * {@inheritDoc}
      */
     @Override
-    public String initClient(ClientLocation clientLocation) {
+    public String initClient(Client client) {
         log.info("开始初始化客户端");
         // 创建 UUID 为 发送到腾讯云的人员库 ID
         String uuid = UUID.randomUUID().toString();
-        log.info("准备插入 clientLocation : " + clientLocation);
-        clientLocationMapper.insert(clientLocation);
-
-        Client client = new Client();
         client.setClientId(uuid)
-                .setLocationId(clientLocation.getId())
                 .setLastUploadDateTime(LocalDateTime.now());
         log.info("准备插入 client");
         clientMapper.insert(client);
@@ -82,7 +79,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         CreateGroupRequest createGroupRequest = new CreateGroupRequest();
         createGroupRequest.setGroupName(uuid);
         createGroupRequest.setGroupId(uuid);
-        createGroupRequest.setGroupExDescriptions(new String[]{String.format("经度：%f，纬度：%f", clientLocation.getLongitude(), clientLocation.getLatitude())});
+        createGroupRequest.setGroupExDescriptions(new String[]{String.format("经度：%f，纬度：%f", client.getLongitude(), client.getLatitude())});
 
         HashMap<String, String> map = new HashMap<>();
         createGroupRequest.toMap(map, "");
@@ -123,7 +120,6 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         TestRecord testRecord = new TestRecord(faceAttributesInfo);
 
 
-
         // 填充客户端 id
         testRecord.setClientId(client.getId());
 
@@ -139,6 +135,9 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         return testRecord;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Client updateLastUploadDateTime(String personGroupId) {
         // 首先根据 groupId 获取该 person_group.id
@@ -149,5 +148,19 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         client.setLastUploadDateTime(LocalDateTime.now());
         clientMapper.insert(client);
         return client;
+    }
+
+    @Override
+    public List<Client> listClintInScope(Double longitude, Double latitude, Integer distance) {
+        log.info(String.format("准备查询范围内的客户端，参数为：longitude: %f, latitude: %f, distance: %d",
+                longitude, latitude, distance));
+        Wrapper<Client> wrapper = new QueryWrapper<Client>()
+                .select(String.format("*, ST_DISTANCE_SPHERE(POINT(%f, %f), POINT(longitude, latitude)) AS `distance`",
+                        longitude, latitude))
+                .apply("{0} >= ST_DISTANCE_SPHERE(POINT({1}, {2}), POINT(longitude, latitude))",
+                        distance, longitude, latitude);
+        List<Client> clientDetailList = clientMapper.selectList(wrapper);
+        log.info("查询成功，返回数据为：\n" + clientDetailList);
+        return clientDetailList;
     }
 }

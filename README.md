@@ -73,7 +73,13 @@
         - `url`：登录凭证校验接口的接口地址，默认是：`https://api.weixin.qq.com/sns/jscode2session`
         - `grant_type`：登录凭证校验接口 的授权类型，默认为：`authorization_code`
 
-5. 环境变量管理
+5. JWT 配置
+
+    1. 在 **环境变量** 中配置 JWT 的 `JWT_SECRET_KEY`
+   
+    - `JWT_SECRET_KEY` 对应的默认环境变量名称为 `XIAO_ZHAO_DEFAULT_JWT_SECRET_KEY`。此环境变量名称不支持手动配置
+
+6. 环境变量管理
 
     - 为了方便环境变量的管理，建议使用项目根目录下的 initEnvironment.ps1 和 deleteEnvironment.ps1 进行管理。需要注意的是这两个文件需要手动运行，并且不建议将其纳入 git 管理。因为当前程序设置的环境变量需要重启才能被获取到
     - initEnvironment.ps1 示例
@@ -92,7 +98,11 @@
       # Wechat Mini Program
       [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_WX_APPID", "xxx", [EnvironmentVariableTarget]::User)
       [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_WX_SECRET", "xxx", [EnvironmentVariableTarget]::User)
-      
+   
+      # JWT
+      [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_JWT_SECRET_KEY", "xiaozhao", [EnvironmentVariableTarget]::User)
+   
+   
       "init successed..."
       exit
    
@@ -115,6 +125,9 @@
       [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_WX_APPID", "", [EnvironmentVariableTarget]::User)
       [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_WX_SECRET", "", [EnvironmentVariableTarget]::User)
 
+      # JWT
+      [Environment]::SetEnvironmentVariable("XIAO_ZHAO_DEFAULT_JWT_SECRET_KEY", "xiaozhao", [EnvironmentVariableTarget]::User)
+   
       "delete successed..."
       exit
 

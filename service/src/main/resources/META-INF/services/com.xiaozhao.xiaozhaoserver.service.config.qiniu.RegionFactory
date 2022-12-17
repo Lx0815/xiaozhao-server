@@ -1,0 +1,7 @@
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.AutoRegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.BeimeiRegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.HuabeiRegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.HuadongRegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.HuadongZheJiang2RegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.HuananRegionFactory
+com.xiaozhao.xiaozhaoserver.service.config.qiniu.impl.XinjiapoRegionFactory

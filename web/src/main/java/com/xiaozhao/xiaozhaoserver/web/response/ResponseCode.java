@@ -26,6 +26,7 @@ public enum ResponseCode {
 
     RESOURCE_NOT_FOUND("A0003", Constants.RESOURCE_NOT_FOUND),
 
+    NOT_FOUND_PERSON_EXCEPTION("A0102", Constants.NOT_FOUND_PERSON_EXCEPTION),
 
     /*
         B 类错误码来源于当前系统

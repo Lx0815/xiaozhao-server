@@ -1,6 +1,6 @@
 package com.xiaozhao.xiaozhaoserver.service;
 
-import com.xiaozhao.xiaozhaoserver.configProp.Code2SessionRequestProperties;
+import com.xiaozhao.xiaozhaoserver.service.configProp.Code2SessionRequestProperties;
 import com.xiaozhao.xiaozhaoserver.model.User;
 
 /**

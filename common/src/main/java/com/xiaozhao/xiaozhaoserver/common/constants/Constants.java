@@ -38,6 +38,7 @@ public class Constants {
      */
     public static final String DATA_ALREADY_EXISTS = "数据已存在";
     public static final String RESOURCE_NOT_FOUND = "资源不存在";
+    public static final String NOT_FOUND_PERSON_EXCEPTION = "没有找到人员";
 
     private Constants() {}
 

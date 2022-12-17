@@ -1,12 +1,12 @@
-package com.xiaozhao.xiaozhaoserver.utils;
+package com.xiaozhao.xiaozhaoserver.service.utils;
 
 import com.tencentcloudapi.common.AbstractModel;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.iai.v20200303.IaiClient;
-import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
-import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
+import com.xiaozhao.xiaozhaoserver.service.configProp.TencentApiPublicProperties;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
