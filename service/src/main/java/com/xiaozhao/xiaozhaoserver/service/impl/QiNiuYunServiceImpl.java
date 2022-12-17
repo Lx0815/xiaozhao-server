@@ -4,7 +4,7 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
-import com.xiaozhao.xiaozhaoserver.config.qiniu.QiNiuProperties;
+import com.xiaozhao.xiaozhaoserver.configProp.QiNiuProperties;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +113,7 @@ public class QiNiuYunServiceImpl implements QiNiuYunService {
      */
     public List<String> saveMultipartBase64ImageList(List<String> base64List, String directory) {
         StringBuilder sb = new StringBuilder();
-        directory = Objects.isNull(directory) ? "" : directory;
+        directory = StringUtils.isBlank(directory) ? qiNiuProperties.getRootDirectory() : directory;
         if (directory.startsWith("/"))
             directory = directory.substring(1);
         String path;

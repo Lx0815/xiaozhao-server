@@ -1,6 +1,5 @@
 package com.xiaozhao.xiaozhaostart.qiniu;
 
-import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @description:
@@ -43,8 +41,8 @@ public class QiNiuServiceTest {
         BASE64Encoder encoder = new BASE64Encoder();
         String encode = encoder.encode(bys);
         list.add(encode);
-        List<String> stringList = qiNiuYunService.saveMultipartBase64ImageList(list, Constants.QINIU_DEFAULT_DIRECTORY);
-        System.out.println(stringList);
+//        List<String> stringList = qiNiuYunService.saveMultipartBase64ImageList(list, QiNiuProperties.DEFAULT_QINIU_DIRECTORY);
+//        System.out.println(stringList);
     }
 
 }

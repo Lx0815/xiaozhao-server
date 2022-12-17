@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.iai.v20200303.models.*;
+import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.exception.ResourceNotFoundException;
 import com.xiaozhao.xiaozhaoserver.mapper.ClientLocationMapper;
@@ -11,7 +12,6 @@ import com.xiaozhao.xiaozhaoserver.mapper.ClientMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonGroupMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.TestRecordMapper;
 import com.xiaozhao.xiaozhaoserver.model.*;
-import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.service.PersonFaceService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
@@ -55,7 +55,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     private UserService userService;
 
     @Autowired
-    private PublicTencentApiProperty publicTencentApiProperty;
+    private TencentApiPublicProperties tencentApiPublicProperties;
 
     @Autowired
     private PersonFaceService personFaceService;
@@ -90,7 +90,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
 
             log.info("开始创建人员库，请求参数为：\n" + map);
             TencentApiUtils.executeIciClientRequest(createGroupRequest, CreateGroupResponse.class,
-                    publicTencentApiProperty);
+                    tencentApiPublicProperties);
         } catch (TencentCloudSDKException e) {
             log.error("创建人员库失败，本次请求对象为：" + map);
             throw new BadParameterException("创建人员库失败", e);

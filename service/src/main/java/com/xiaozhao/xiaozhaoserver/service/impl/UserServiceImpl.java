@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.iai.v20200303.models.*;
-import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
-import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
+import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
 import com.xiaozhao.xiaozhaoserver.mapper.UserMapper;
@@ -49,7 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private PersonFaceMapper personFaceMapper;
 
     @Autowired
-    private PublicTencentApiProperty publicTencentApiProperty;
+    private TencentApiPublicProperties tencentApiPublicProperties;
 
     @Autowired
     private PersonFaceService personFaceService;
@@ -93,7 +92,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         try {
             // 发送请求
             createPersonResponse = TencentApiUtils.executeIciClientRequest(createPersonRequest,
-                    CreatePersonResponse.class, publicTencentApiProperty);
+                    CreatePersonResponse.class, tencentApiPublicProperties);
             stopWatch.stop();
         } catch (TencentCloudSDKException e) {
             log.error("创建人员请求失败，本次请求对象为：" + map);
@@ -104,7 +103,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LinkedList<String> base64List = new LinkedList<>();
         base64List.add(imageBase64Str);
         log.info("准备添加 " + base64List.size() + " 张人脸图片到七牛云存储");
-        List<String> accessList = qiNiuYunService.saveMultipartBase64ImageList(base64List, Constants.QINIU_DEFAULT_DIRECTORY);
+        List<String> accessList = qiNiuYunService.saveMultipartBase64ImageList(base64List, null);
         // 取得该人脸图片的访问路径
         String imageUrl = accessList.get(0);
 
@@ -169,7 +168,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     try {
                         log.info("开始请求腾讯云API以删除人脸，本次请求对象为：\n" + map);
                         TencentApiUtils.executeIciClientRequest(deleteFaceRequest, DeleteFaceResponse.class,
-                                publicTencentApiProperty);
+                                tencentApiPublicProperties);
                         stopWatch.stop();
                     } catch (TencentCloudSDKException e) {
                         log.error("删除失败，本次请求对象为：\n" + map);

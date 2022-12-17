@@ -44,7 +44,7 @@ public class ClientController {
     private ResponseObjectPool responseObjectPool;
 
     @ApiOperation("初始化人员库")
-    @PostMapping("/person-group")
+    @PostMapping("/person_group")
     public Object initPersonGroup(@RequestBody ClientLocation clientLocation, HttpServletRequest request,
                                   HttpServletResponse response) {
         // 查看 Cookie 中是否存在 人员库ID，若有则直接返回
@@ -69,7 +69,7 @@ public class ClientController {
     }
 
     @ApiOperation("添加人员")
-    @PostMapping("/person")
+    @PostMapping("/person_face")
     public Object addPerson(@RequestBody DetectFaceRequest detectFaceRequest, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         ResponseObject response = responseObjectPool.createResponse(ResponseCode.ERROR_PARAMETER_EXCEPTION, "检测到设备没有初始化，请先进行初始化");

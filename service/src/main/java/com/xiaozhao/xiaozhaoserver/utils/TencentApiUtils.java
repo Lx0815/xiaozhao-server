@@ -5,8 +5,8 @@ import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.iai.v20200303.IaiClient;
+import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
-import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,25 +45,25 @@ public class TencentApiUtils {
      * 向腾讯云接口提交请求
      * @param abstractModel 请求模型
      * @param responseClass 响应类的类对象
-     * @param publicTencentApiProperty 腾讯云接口的相关请求参数
+     * @param tencentApiPublicProperties 腾讯云接口的相关请求参数
      * @return 返回请求得到的响应对象
      * @param <T> 响应对象
      * @throws TencentCloudSDKException 调用腾讯云接口时抛出异常
      */
     @SuppressWarnings("unchecked")
     public static <T> T executeIciClientRequest(AbstractModel abstractModel, Class<T> responseClass,
-                                                   PublicTencentApiProperty publicTencentApiProperty) throws TencentCloudSDKException {
+                                                   TencentApiPublicProperties tencentApiPublicProperties) throws TencentCloudSDKException {
 
         try {
             // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密
             // 密钥可前往https://console.cloud.tencent.com/cam/capi网站进行获取
-            Credential cred = new Credential(publicTencentApiProperty.getSecretId(),
-                    publicTencentApiProperty.getSecretKey());
+            Credential cred = new Credential(tencentApiPublicProperties.getSecretId(),
+                    tencentApiPublicProperties.getSecretKey());
             // 实例化一个client选项，可选的，没有特殊需求可以跳过
             ClientProfile clientProfile = new ClientProfile();
             clientProfile.setDebug(true);
             // 实例化要请求产品的client对象,clientProfile是可选的
-            IaiClient client = new IaiClient(cred, publicTencentApiProperty.getRegion(), clientProfile);
+            IaiClient client = new IaiClient(cred, tencentApiPublicProperties.getRegion(), clientProfile);
 
             // 返回的resp是一个CreatePersonResponse的实例，与请求对象对应
             for (Method method : iaiClientMethodList) {

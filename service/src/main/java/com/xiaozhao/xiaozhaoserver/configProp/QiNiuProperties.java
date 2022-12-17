@@ -1,6 +1,5 @@
-package com.xiaozhao.xiaozhaoserver.config.qiniu;
+package com.xiaozhao.xiaozhaoserver.configProp;
 
-import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -18,13 +17,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class QiNiuProperties {
 
-    @Value("${qiniu.accessKeyEnvName:#{ null }}")
+
     @Setter
+    @Getter
+    @Value("${qiniu.accessKeyEnvName:#{ 'XIAO_ZHAO_DEFAULT_QINIU_ACCESS_KEY' }}")
     private String accessKeyEnvName;
 
-    @Value("${qiniu.secretKeyEnvName:#{ null }}")
+
     @Setter
+    @Getter
+    @Value("${qiniu.secretKeyEnvName:#{ 'XIAO_ZHAO_DEFAULT_QINIU_SECRET_KEY' }}")
     private String secretKeyEnvName;
+
 
     @Value("${qiniu.bucket}")
     @Getter
@@ -39,6 +43,11 @@ public class QiNiuProperties {
     @Value("${qiniu.domain}")
     @Setter
     private String domain;
+
+    @Value("${qiniu.rootDirectory:#{ 'xiaozhao/person-face/' }}")
+    @Setter
+    private String rootDirectory;
+
 
     @Value("${qiniu.retryMaxCount:#{ 3 }}")
     @Getter
@@ -56,24 +65,20 @@ public class QiNiuProperties {
 
 
     public String getDomain() {
-        if (! "".equals(domain) && ! domain.endsWith("/")) {
+        if (! StringUtils.isBlank(domain) && !domain.endsWith("/")) {
             domain += '/';
         }
         return domain;
     }
 
-    public String getAccessKeyEnvName() {
-        if (StringUtils.isBlank(accessKeyEnvName)) {
-            accessKeyEnvName = Constants.QINIU_ACCESS_KEY_ENV;
+    public String getRootDirectory() {
+        if (! StringUtils.isBlank(rootDirectory) && rootDirectory.startsWith("/")) {
+            rootDirectory = rootDirectory.substring(1);
         }
-        return accessKeyEnvName;
-    }
-
-    public String getSecretKeyEnvName() {
-        if (StringUtils.isBlank(secretKeyEnvName)) {
-            secretKeyEnvName = Constants.QINIU_SECRET_KEY_ENV;
+        if (! StringUtils.isBlank(rootDirectory) && !rootDirectory.endsWith("/")) {
+            rootDirectory += '/';
         }
-        return secretKeyEnvName;
+        return rootDirectory;
     }
 
     public String getAccessKey() {

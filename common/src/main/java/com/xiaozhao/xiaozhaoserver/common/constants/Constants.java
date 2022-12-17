@@ -11,34 +11,6 @@ package com.xiaozhao.xiaozhaoserver.common.constants;
 public class Constants {
 
     /*=====================================
-        第三方接口
-        ======================================*/
-    /**
-        存储腾讯云 API 密钥 secretId 的默认环境变量名称
-     */
-    public static final String TENCENT_SECRET_ID_ENV = "TENCENT_SECRET_ID";
-
-    /**
-        存储腾讯云 API 密钥 secretKey 的默认环境变量名称
-     */
-    public static final String TENCENT_SECRET_KEY_ENV = "TENCENT_SECRET_KEY";
-
-    /**
-     * 七牛云存储 默认的 初始目录
-     */
-    public static final String QINIU_DEFAULT_DIRECTORY = "xiaozhao/person-face/";
-
-    /**
-     * 七牛云存储API 密钥 accessKey 的默认环境变量名称
-     */
-    public static final String QINIU_ACCESS_KEY_ENV = "QINIU_ACCESS_KEY";
-
-    /**
-     * 七牛云存储API 密钥 secretKey 的默认环境变量名称
-     */
-    public static final String QINIU_SECRET_KEY_ENV = "QINIU_SECRET_KEY";
-
-    /*=====================================
         Cookie
         ======================================*/
     /**
@@ -50,6 +22,11 @@ public class Constants {
      * Cookie 键，人员库ID 在 cookie 中存储的键名称
      */
     public static final String PERSON_GROUP_ID_COOKIE_KEY = "PERSON_GROUP_ID_COOKIE_KEY";
+
+    /**
+     * Token 在 header 中的键名称
+     */
+    public static final String TOKEN_HEADER_KEY = "Token";
 
 
 

@@ -30,13 +30,13 @@ public class User {
     private String personId;
 
     @ApiModelProperty("微信号")
-    private String wechatId;
+    private String openid;
 
     @ApiModelProperty("人员昵称")
-    private String personName;
+    private String nickName;
 
     @ApiModelProperty("人员性别")
-    private String gender;
+    private String realGender;
 
     @ApiModelProperty("人员真实年龄")
     private String realAge;

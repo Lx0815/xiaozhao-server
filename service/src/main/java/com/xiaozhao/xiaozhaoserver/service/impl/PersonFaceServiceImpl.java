@@ -8,7 +8,7 @@ import com.tencentcloudapi.iai.v20200303.models.CreateFaceRequest;
 import com.tencentcloudapi.iai.v20200303.models.CreateFaceResponse;
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceRequest;
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceResponse;
-import com.xiaozhao.xiaozhaoserver.configProp.PublicTencentApiProperty;
+import com.xiaozhao.xiaozhaoserver.configProp.TencentApiPublicProperties;
 import com.xiaozhao.xiaozhaoserver.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.exception.NoFaceInPhotoException;
 import com.xiaozhao.xiaozhaoserver.mapper.PersonFaceMapper;
@@ -41,7 +41,7 @@ import java.util.HashMap;
 public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonFace> implements PersonFaceService {
 
     @Autowired
-    private PublicTencentApiProperty publicTencentApiProperty;
+    private TencentApiPublicProperties tencentApiPublicProperties;
 
     @Autowired
     private UserMapper userMapper;
@@ -65,7 +65,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
             log.info("开始进行人脸检测与分析");
             stopWatch.start();
             DetectFaceResponse detectFaceResponse = TencentApiUtils.executeIciClientRequest(detectFaceRequest,
-                    DetectFaceResponse.class, publicTencentApiProperty);
+                    DetectFaceResponse.class, tencentApiPublicProperties);
             stopWatch.stop();
             log.info("人脸检测与分析成功，耗时：" + stopWatch.getTotalTimeMillis() + " ms");
             return detectFaceResponse;
@@ -90,7 +90,7 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
         CreateFaceResponse createFaceResponse;
         try {
             createFaceResponse = TencentApiUtils.executeIciClientRequest(createFaceRequest, CreateFaceResponse.class,
-                    publicTencentApiProperty);
+                    tencentApiPublicProperties);
             stopWatch.stop();
         } catch (TencentCloudSDKException e) {
             log.error("添加人脸失败，本次请求对象为：\n" + map);

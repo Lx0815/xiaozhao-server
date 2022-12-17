@@ -31,10 +31,10 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user`
 (
     `id`               INT         NOT NULL AUTO_INCREMENT COMMENT '主键id，无实际业务含义',
-    `person_id`        CHAR(36)    NOT NULL COMMENT '人员id，UUID生成',
-    `wechat_id`        VARCHAR(20) NULL COMMENT '微信号，6 - 20位',
-    `person_name`      VARCHAR(16) NULL COMMENT '人员昵称，后期用户在小程序中填写',
-    `gender`           CHAR(1)     NULL COMMENT '性别，后期用户在小程序中填写',
+    `person_id`        CHAR(36)    NULL COMMENT '人员id，UUID生成',
+    `openid`        VARCHAR(128) NULL COMMENT '微信用户的唯一ID',
+    `nick_name`      VARCHAR(16) NULL COMMENT '人员昵称，后期用户在小程序中填写',
+    `real_gender`           CHAR(1)     NULL COMMENT '性别，后期用户在小程序中填写',
     `real_age`         INT         NULL COMMENT '年龄，后期用户在小程序中填写',
     `create_date_time` DATETIME    NOT NULL COMMENT '创建时间',
     `update_date_time` DATETIME    NOT NULL COMMENT '上次修改时间',

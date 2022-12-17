@@ -1,2 +1,5 @@
 .idea/
 **/target
+
+initEnvironment.ps1
+deleteEnvironment.ps1
