@@ -65,8 +65,8 @@ public class ClientController {
     }
 
     @ApiOperation("添加人员")
-    @PostMapping("/person_face")
-    public Object addPerson(@RequestBody DetectFaceRequest detectFaceRequest, HttpServletRequest request) {
+    @PostMapping("/analyze")
+    public Object analyzeAndSaveFaceInformation(@RequestBody DetectFaceRequest detectFaceRequest, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         ResponseObject response = responseObjectPool.createResponse(ResponseCode.ERROR_PARAMETER_EXCEPTION, "检测到设备没有初始化，请先进行初始化");
         if (ObjectUtils.isEmpty(cookies)) {

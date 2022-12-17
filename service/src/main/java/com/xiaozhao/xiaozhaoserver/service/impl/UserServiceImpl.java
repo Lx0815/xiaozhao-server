@@ -208,7 +208,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User bindWechatAndPerson(SearchPersonsRequest searchPersonsRequest, Double longitude, Double latitude, Integer userId) {
-        SearchFacesResponse searchFacesResponse;
+        SearchPersonsResponse searchPersonsResponse;
         // 填充人员库参数
         List<Client> clientList = clientService.listClintInScope(longitude, latitude, 50000);
         searchPersonsRequest.setGroupIds(clientList.stream().map(Client::getClientId).toArray(String[]::new));
@@ -216,7 +216,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         searchPersonsRequest.toMap(map, "");
         try {
             log.info("准备请求腾讯云 API 查找人员" );
-            searchFacesResponse = TencentApiUtils.executeIciClientRequest(searchPersonsRequest, SearchFacesResponse.class,
+            searchPersonsResponse = TencentApiUtils.executeIciClientRequest(searchPersonsRequest, SearchPersonsResponse.class,
                     tencentApiPublicProperties);
         } catch (TencentCloudSDKException e) {
             log.error("请求失败，本次请求对象为：\n" + map);
@@ -225,7 +225,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             throw new BadParameterException(e);
         }
-        Result[] results = searchFacesResponse.getResults();
+        Result[] results = searchPersonsResponse.getResults();
         if (ObjectUtils.isEmpty(results)) throw new NotFoundPersonException(Constants.NOT_FOUND_PERSON_EXCEPTION);
         Candidate[] candidates = results[0].getCandidates();
         if (ObjectUtils.isEmpty(candidates)) throw new NotFoundPersonException(Constants.NOT_FOUND_PERSON_EXCEPTION);

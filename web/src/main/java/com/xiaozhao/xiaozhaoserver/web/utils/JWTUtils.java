@@ -13,10 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @description:
@@ -92,11 +89,16 @@ public class JWTUtils {
     @SuppressWarnings("unchecked")
     public static Map<String, String> getTokenInfo(String token){
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JWT_SECRET_KEY)).build().verify(token);
-        String payloadJson = decodedJWT.getPayload();
+        String payload = decodedJWT.getPayload();
+        String payloadJson = new String(Base64.getUrlDecoder().decode(payload));
         try {
             return objectMapper.readValue(payloadJson, Map.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getId(String token) {
+        return getTokenInfo(token).get("id");
     }
 }
