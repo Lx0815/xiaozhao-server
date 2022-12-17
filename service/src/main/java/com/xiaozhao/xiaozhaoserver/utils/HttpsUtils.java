@@ -26,20 +26,6 @@ public class HttpsUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void main(String args[]) {
-
-        String appid = "wxfc76e609d265910c";
-        String secret = "0d181821a87c6eed64b1e9d1f36c5b13";
-        String js_code = "011vTMFa1S2erE0URFGa1k5lrd2vTMF5";
-
-        // get方式调用接口
-//        String resultString = httpGet(String.format("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", appid, secret, js_code));
-
-        // 获取接口信息
-//        System.out.println(resultString);
-    }
-
-
     final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
         public boolean verify(String hostname, SSLSession session) {
             return true;
