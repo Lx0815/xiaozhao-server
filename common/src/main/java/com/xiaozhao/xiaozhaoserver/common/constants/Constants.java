@@ -28,7 +28,10 @@ public class Constants {
      */
     public static final String TOKEN_HEADER_KEY = "Token";
 
-
+    /**
+     * token payload 的键名称
+     */
+    public static final String USER_ID_TOKEN_PAYLOAD_KEY = "userId";
 
     /*=====================================
         Web 响应相关

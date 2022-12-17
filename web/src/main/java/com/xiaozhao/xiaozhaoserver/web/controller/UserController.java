@@ -54,7 +54,7 @@ public class UserController {
         this.code2SessionRequestProperties.setJs_code(code2SessionRequestProperties.getJs_code());
         log.info(String.format("获取到 js_code：%s，准备登录", code2SessionRequestProperties.getJs_code()));
         User user = wechatService.code2Session(this.code2SessionRequestProperties);
-        String token = JWTUtils.getToken("id", String.valueOf(user.getId()));
+        String token = JWTUtils.getToken(Constants.USER_ID_TOKEN_PAYLOAD_KEY, String.valueOf(user.getId()));
         log.info(String.format("登录成功，用户信息：%s，生成的 token ：%s", user, token));
         return responseObjectPool.createSuccessResponse(token);
     }

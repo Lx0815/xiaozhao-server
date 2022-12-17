@@ -8,6 +8,9 @@ import com.xiaozhao.xiaozhaoserver.service.TestRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * @description:
  * @author: Ding
@@ -22,9 +25,14 @@ public class TestRecordServiceImpl extends ServiceImpl<TestRecordMapper, TestRec
 
 
     @Override
-    public Integer selectCountById(String id) {
-        return Math.toIntExact(count(new QueryWrapper<TestRecord>().eq("user_id", id)));
+    public Integer selectCountById(Integer userId) {
+        return Math.toIntExact(count(new QueryWrapper<TestRecord>().eq("user_id", userId)));
     }
 
-
+    @Override
+    public List<TestRecord> listByDayScope(Integer userId, Integer day) {
+        return list(new QueryWrapper<TestRecord>()
+                .eq("user_id", userId)
+                .gt("create_date_time", LocalDateTime.now().minusDays(day)));
+    }
 }

@@ -10,8 +10,10 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -98,7 +100,13 @@ public class JWTUtils {
         }
     }
 
-    public static String getId(String token) {
-        return getTokenInfo(token).get("id");
+    public static Integer getUserId(String token) {
+        String userId = getTokenInfo(token).get(Constants.USER_ID_TOKEN_PAYLOAD_KEY);
+        if (StringUtils.isNumeric(userId)) {
+            return Integer.parseInt(userId);
+        } else {
+            // 此错误不应该被抛出
+            throw new BadParameterException("token 中记录的 userId 不是一个合法的数字，请检查 登录 方法");
+        }
     }
 }
