@@ -2,11 +2,11 @@ package com.xiaozhao.xiaozhaoserver.web.controller;
 
 import com.tencentcloudapi.iai.v20200303.models.SearchPersonsRequest;
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
-import com.xiaozhao.xiaozhaoserver.service.configProp.Code2SessionRequestProperties;
-import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.model.User;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
 import com.xiaozhao.xiaozhaoserver.service.WechatService;
+import com.xiaozhao.xiaozhaoserver.service.configProp.Code2SessionRequestProperties;
+import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.web.annotation.MultiParameterBody;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
 import com.xiaozhao.xiaozhaoserver.web.utils.JWTUtils;
@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @description:
@@ -62,12 +60,11 @@ public class UserController {
     @PostMapping("/bind")
     public Object bind(@MultiParameterBody SearchPersonsRequest searchPersonsRequest,
                        @MultiParameterBody Double longitude,
-                       @MultiParameterBody Double latitude, HttpServletRequest request) {
+                       @MultiParameterBody Double latitude, Integer userId) {
         if (StringUtils.isBlank(searchPersonsRequest.getImage()))
             throw new BadParameterException("searchPersonsRequest 缺失必要的参数 image");
-        String token = request.getHeader(Constants.TOKEN_HEADER_KEY);
-        User user = userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude,
-                Integer.parseInt(JWTUtils.getTokenInfo(token).get("id")));
+
+        User user = userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude, userId);
 
         return responseObjectPool.createSuccessResponse(user);
     }

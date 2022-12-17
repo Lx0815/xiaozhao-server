@@ -26,6 +26,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private MultiParameterBodyResolver multiParameterBodyResolver;
 
     @Autowired
+    private TokenPayloadArgumentResolver tokenPayloadArgumentResolver;
+
+    @Autowired
     private AllInterceptor allInterceptor;
 
     @Autowired
@@ -42,5 +45,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(multiParameterBodyResolver);
+        resolvers.add(tokenPayloadArgumentResolver);
     }
 }

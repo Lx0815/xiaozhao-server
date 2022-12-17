@@ -8,6 +8,7 @@ import com.xiaozhao.xiaozhaoserver.service.TestRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,5 +35,19 @@ public class TestRecordServiceImpl extends ServiceImpl<TestRecordMapper, TestRec
         return list(new QueryWrapper<TestRecord>()
                 .eq("user_id", userId)
                 .gt("create_date_time", LocalDateTime.now().minusDays(day)));
+    }
+
+    @Override
+    public List<TestRecord> listAvgDailyByDays(Integer day, Integer userId) {
+        return list(new QueryWrapper<TestRecord>()
+                .select("id", "user_id", "AVG(temperature) AS `temperature`", "AVG(age) AS `age`", "AVG(beauty) AS `beauty`"
+                , "AVG(heart_rate) AS `heart_rate`", "TIMESTAMP(DATE_FORMAT(`create_date_time`, '%Y-%m-%d')) AS `create_date_time`")
+                .groupBy("DATE_FORMAT(`create_date_time`, '%Y-%m-%d')"));
+    }
+
+    @Override
+    public List<TestRecord> listByDate(LocalDate date) {
+        return list(new QueryWrapper<TestRecord>()
+                .between("create_date_time", date, date.plusDays(1)));
     }
 }
