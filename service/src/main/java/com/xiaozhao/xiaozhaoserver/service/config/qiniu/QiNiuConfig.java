@@ -35,7 +35,6 @@ public class QiNiuConfig {
     public com.qiniu.storage.Configuration qiNiuConfiguration() {
         try {
             log.info("准备开始读取 QiNiuProperties: ");
-            log.info(qiNiuProperties.toString());
             com.qiniu.storage.Configuration configuration = new com.qiniu.storage.Configuration(RegionFactoryBuilder
                     .builder(qiNiuProperties.getRegion())
                     .createRegion());

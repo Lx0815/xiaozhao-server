@@ -1,8 +1,6 @@
 package com.xiaozhao.xiaozhaoserver.service.configProp;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,46 +12,20 @@ import org.springframework.stereotype.Component;
  * @modify:
  */
 
+@Data
 @Component
 public class TencentApiPublicProperties {
 
-    @Value("${tencent.secretIdEnvName:#{ 'XIAO_ZHAO_DEFAULT_TENCENT_SECRET_ID' }}")
-    @Setter
-    @Getter
-    private String secretIdEnvName;
-
-
-    @Value("${tencent.secretKeyEnvName:#{ 'XIAO_ZHAO_DEFAULT_TENCENT_SECRET_KEY' }}")
-    @Setter
-    @Getter
-    private String secretKeyEnvName;
-
-
     @Value("${tencent.domainName}")
-    @Getter
-    @Setter
     private String domainName;
 
     @Value("${tencent.region}")
-    @Getter
-    @Setter
     private String region;
 
+    @Value("${XIAO_ZHAO_DEFAULT_TENCENT_SECRET_ID}")
     private String secretId;
 
+    @Value("${XIAO_ZHAO_DEFAULT_TENCENT_SECRET_KEY}")
     private String secretKey;
 
-    public String getSecretId() {
-        if (StringUtils.isBlank(secretId)) {
-            this.secretId = System.getenv(getSecretIdEnvName());
-        }
-        return this.secretId;
-    }
-
-    public String getSecretKey() {
-        if (StringUtils.isBlank(secretKey)) {
-            this.secretKey = System.getenv(getSecretKeyEnvName());
-        }
-        return this.secretKey;
-    }
 }

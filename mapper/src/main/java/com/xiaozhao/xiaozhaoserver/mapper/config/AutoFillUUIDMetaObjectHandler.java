@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.config;
+package com.xiaozhao.xiaozhaoserver.mapper.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,6 @@
 .idea/
 **/target
+/**/environment.properties
 
 initEnvironment.ps1
 deleteEnvironment.ps1

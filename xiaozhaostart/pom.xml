@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>xiaozhaostart</artifactId>
+    <artifactId>com.xiaozhao.xiaozhaoserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>xiaozhaostart</name>
     <description>xiaozhaostart</description>
@@ -24,4 +24,15 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.xiaozhao.xiaozhaoserver.xiaozhaostart.XiaozhaostartApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

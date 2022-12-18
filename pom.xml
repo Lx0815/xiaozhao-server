@@ -36,6 +36,7 @@
         <qiniu-java-sdk.version>7.12.0</qiniu-java-sdk.version>
         <commons-io.version>2.11.0</commons-io.version>
         <java-jwt.version>4.2.1</java-jwt.version>
+        <d-environment.version>1.0</d-environment.version>
     </properties>
 
     <dependencies>
@@ -153,16 +154,6 @@
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
         </dependency>
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

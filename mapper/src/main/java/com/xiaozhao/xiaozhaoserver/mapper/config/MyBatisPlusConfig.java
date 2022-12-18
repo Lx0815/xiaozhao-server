@@ -1,4 +1,4 @@
-package com.xiaozhao.xiaozhaoserver.config;
+package com.xiaozhao.xiaozhaoserver.mapper.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;

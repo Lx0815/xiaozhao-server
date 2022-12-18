@@ -1,7 +1,6 @@
 package com.xiaozhao.xiaozhaoserver.service.configProp;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,53 +13,33 @@ import org.springframework.stereotype.Component;
  * @modify:
  */
 
+@Data
 @Component
 public class QiNiuProperties {
 
-
-    @Setter
-    @Getter
-    @Value("${qiniu.accessKeyEnvName:#{ 'XIAO_ZHAO_DEFAULT_QINIU_ACCESS_KEY' }}")
-    private String accessKeyEnvName;
-
-
-    @Setter
-    @Getter
-    @Value("${qiniu.secretKeyEnvName:#{ 'XIAO_ZHAO_DEFAULT_QINIU_SECRET_KEY' }}")
-    private String secretKeyEnvName;
-
-
     @Value("${qiniu.bucket}")
-    @Getter
-    @Setter
     private String bucket;
 
     @Value("${qiniu.region}")
-    @Getter
-    @Setter
     private String region;
 
     @Value("${qiniu.domain}")
-    @Setter
     private String domain;
 
     @Value("${qiniu.rootDirectory:#{ 'xiaozhao/person-face/' }}")
-    @Setter
     private String rootDirectory;
 
 
     @Value("${qiniu.retryMaxCount:#{ 3 }}")
-    @Getter
-    @Setter
     private int retryMaxCount;
 
     @Value("${qiniu.accelerateUploadDomain}")
-    @Getter
-    @Setter
     private String accelerateUploadDomain;
 
+    @Value("${XIAO_ZHAO_DEFAULT_QINIU_ACCESS_KEY}")
     private String accessKey;
 
+    @Value("${XIAO_ZHAO_DEFAULT_QINIU_SECRET_KEY}")
     private String secretKey;
 
 
@@ -79,19 +58,5 @@ public class QiNiuProperties {
             rootDirectory += '/';
         }
         return rootDirectory;
-    }
-
-    public String getAccessKey() {
-        if (StringUtils.isBlank(accessKey)) {
-            accessKey = System.getenv(getAccessKeyEnvName());
-        }
-        return accessKey;
-    }
-
-    public String getSecretKey() {
-        if (StringUtils.isBlank(secretKey)) {
-            secretKey = System.getenv(getSecretKeyEnvName());
-        }
-        return secretKey;
     }
 }
