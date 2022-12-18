@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 @SpringBootApplication(scanBasePackages = {"com.xiaozhao"})
 @ComponentScan("com.xiaozhao")
 @EnableConfigurationProperties
-@PropertySource("classpath:environment.properties")
+@PropertySource("file:config/environment.properties")
 public class XiaozhaostartApplication {
 
     public static void main(String[] args) {

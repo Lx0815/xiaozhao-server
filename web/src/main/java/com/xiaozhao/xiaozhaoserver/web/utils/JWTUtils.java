@@ -28,13 +28,11 @@ import java.util.*;
 @Slf4j
 public class JWTUtils {
 
-    public static final String DEFAULT_JWT_SECRET_KEY_ENV = "XIAO_ZHAO_DEFAULT_JWT_SECRET_KEY";
-
-    private static final String JWT_SECRET_KEY = System.getenv(DEFAULT_JWT_SECRET_KEY_ENV);
+    private static final String JWT_SECRET_KEY = "xiaozhao";
 
     private static final int DEFAULT_EXPIRE_TIME = 7 * 24 * 60 * 60;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static String getToken(String... entries) {
         return getToken(DEFAULT_EXPIRE_TIME, entries);
