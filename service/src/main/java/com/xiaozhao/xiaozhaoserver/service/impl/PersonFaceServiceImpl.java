@@ -120,10 +120,11 @@ public class PersonFaceServiceImpl extends ServiceImpl<PersonFaceMapper, PersonF
      */
     @Override
     public boolean checkPersonFaceIsFull(User user) {
-        return ObjectUtils.nullSafeEquals(5,
-                personFaceMapper.selectCount(
-                        new QueryWrapper<PersonFace>()
-                                .eq("user_id", user.getId())));
+        Long count = personFaceMapper.selectCount(
+                new QueryWrapper<PersonFace>()
+                        .eq("user_id", user.getId()));
+        log.info(String.format("用户 %s 的人脸数量为：", count));
+        return count >= 4;
     }
 
 }

@@ -121,10 +121,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
          */
         String similarPersonId = createPersonResponse.getSimilarPersonId();
         // 判断是否有相似人员
-        boolean hasSimilarPerson = StringUtils.isBlank(similarPersonId);
-        log.info("本次添加人员" + (hasSimilarPerson ? "有" : "无") + "相似人员");
+        boolean notHaveSimilarPerson = StringUtils.isBlank(similarPersonId);
+        log.info("本次添加人员" + (notHaveSimilarPerson ? "无" : "有") + "相似人员");
         User user;
-        if (hasSimilarPerson) {
+        if (notHaveSimilarPerson) {
             log.info("准备插入 user");
 
             // 先增加人员
@@ -156,7 +156,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 QueryWrapper<PersonFace> queryWrapper = new QueryWrapper<>();
                 queryWrapper
                         .eq("user_id", similarPersonId)
-                        .lt("score", personFaceScore);
+                        .lt("image_quality_score", personFaceScore);
                 log.info("获取人脸质量比当前人脸小的 personFace");
                 List<PersonFace> personFaces = personFaceMapper.selectList(queryWrapper);
                 if (! ObjectUtils.isEmpty(personFaces)) {

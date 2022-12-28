@@ -107,4 +107,9 @@ public class JWTUtils {
             throw new BadParameterException("token 中记录的 userId 不是一个合法的数字，请检查 登录 方法");
         }
     }
+
+    public static void main(String[] args) {
+        String token = getToken(Constants.USER_ID_TOKEN_PAYLOAD_KEY, String.valueOf(8));
+        System.out.println(token);
+    }
 }

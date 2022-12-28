@@ -13,6 +13,7 @@ import com.xiaozhao.xiaozhaoserver.service.UserService;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
 import com.xiaozhao.xiaozhaoserver.web.response.ResponseCode;
 import com.xiaozhao.xiaozhaoserver.web.response.ResponseObject;
+import com.xiaozhao.xiaozhaoserver.web.utils.JWTUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -124,8 +125,11 @@ public class ClientController {
         }
         SearchPersonsRequest searchPersonsRequest = new SearchPersonsRequest();
         searchPersonsRequest.setImage(detectFaceRequest.getImage());
-        userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude, userId);
-        return testRecord;
+        user = userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude, userId);
+        return responseObjectPool.createSuccessResponse(new Object[]{
+                testRecord,
+                JWTUtils.getToken(Constants.USER_ID_TOKEN_PAYLOAD_KEY, String.valueOf(user.getId()))
+        });
     }
 
     @GetMapping("/location/longitude/{longitude}/latitude/{latitude}/distance/{distance}")
