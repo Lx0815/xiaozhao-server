@@ -6,6 +6,7 @@ import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.model.Client;
 import com.xiaozhao.xiaozhaoserver.model.PersonGroup;
 import com.xiaozhao.xiaozhaoserver.model.TestRecord;
+import com.xiaozhao.xiaozhaoserver.model.User;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
 import com.xiaozhao.xiaozhaoserver.service.PersonGroupService;
 import com.xiaozhao.xiaozhaoserver.service.UserService;
@@ -15,6 +16,7 @@ import com.xiaozhao.xiaozhaoserver.web.response.ResponseObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -115,6 +117,11 @@ public class ClientController {
         TestRecord testRecord = clientService.analyzeAndSaveFaceInformation(detectFaceRequest, client, personGroup.getGroupId());
 
         // 合并用户信息
+        User user = userService.getById(userId);
+        if (! StringUtils.isBlank(user.getPersonId())) {
+            // 用户信息完整，无需合并
+            return testRecord;
+        }
         SearchPersonsRequest searchPersonsRequest = new SearchPersonsRequest();
         searchPersonsRequest.setImage(detectFaceRequest.getImage());
         userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude, userId);
