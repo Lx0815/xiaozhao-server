@@ -121,7 +121,7 @@ public class ClientController {
         User user = userService.getById(userId);
         if (! StringUtils.isBlank(user.getPersonId())) {
             // 用户信息完整，无需合并
-            return testRecord;
+            return responseObjectPool.createSuccessResponse(new Object[]{testRecord});
         }
         SearchPersonsRequest searchPersonsRequest = new SearchPersonsRequest();
         searchPersonsRequest.setImage(detectFaceRequest.getImage());
