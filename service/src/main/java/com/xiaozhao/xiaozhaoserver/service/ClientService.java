@@ -36,4 +36,6 @@ public interface ClientService extends IService<Client> {
     Client updateLastUploadDateTime(String personGroupId);
 
     List<Client> listClintInScope(Double longitude, Double latitude, Integer distance);
+
+    Client findMinDistanceClient(Double longitude, Double latitude);
 }

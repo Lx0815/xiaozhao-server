@@ -81,22 +81,33 @@ public class QiNiuYunServiceImpl implements QiNiuYunService {
      */
     @Override
     public List<String> saveMultipartFileList(List<MultipartFile> fileList, String directory) {
+        // 防止 NPE
         directory = Objects.isNull(directory) ? "" : directory;
+        // 图片保存路径
         StringBuilder path;
+        // 响应对象
         com.qiniu.http.Response response;
+        // 图片访问路径
         String accessPath = null;
+        // 所有图片的访问路径
         List<String> accessPathList = new LinkedList<>();
         try {
             StringBuilder sb = new StringBuilder();
             for (MultipartFile multipartFile : fileList) {
+                // 获取文件名，主要用于获取图片后缀
                 String fileName = multipartFile.getOriginalFilename();
+                // 使用 UUID 生成文件名，与目录拼接得到保存路径
                 path = sb.append(directory).append(UUID.randomUUID()).append('.').append(StringUtils.substringAfterLast(fileName, "."));
+                // 开始上传文件
                 response = uploadManager.put(multipartFile.getBytes(), path.toString(), getUploadToken());
 
                 if (!response.isOK()) {
+                    log.error(String.format("本次上传信息：\n文件名：%s\n文件大小：%s\n文件保存路径：%s",
+                            fileName, multipartFile.getSize(), path));
                     throw new RuntimeException("上传文件失败");
                 }
                 sb.delete(0, sb.length());
+                // 得到访问路径
                 accessPath = sb.append("http://").append(qiNiuProperties.getDomain()).append(path).toString();
                 accessPathList.add(accessPath);
                 sb.delete(0, sb.length());

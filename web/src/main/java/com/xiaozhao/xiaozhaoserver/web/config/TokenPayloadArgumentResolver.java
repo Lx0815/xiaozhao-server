@@ -3,6 +3,7 @@ package com.xiaozhao.xiaozhaoserver.web.config;
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
 import com.xiaozhao.xiaozhaoserver.web.utils.JWTUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @modify:
  */
 
+@Slf4j
 @Component
 public class TokenPayloadArgumentResolver implements HandlerMethodArgumentResolver {
 

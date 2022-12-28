@@ -163,4 +163,21 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         log.info("查询成功，返回数据为：\n" + clientDetailList);
         return clientDetailList;
     }
+
+    @Override
+    public Client findMinDistanceClient(Double longitude, Double latitude) {
+        int distance = 1000;
+        Client client = null;
+        for (int i = 0; i < 3; i++) {
+            List<Client> clientList = listClintInScope(longitude, latitude, distance * (int) Math.pow(10, i));
+            if (! ObjectUtils.isEmpty(clientList)) {
+                client = clientList.get(0);
+                break;
+            }
+        }
+        if (ObjectUtils.isEmpty(client)) {
+            throw new BadParameterException("该地区不支持本服务");
+        }
+        return client;
+    }
 }

@@ -19,6 +19,7 @@ public @interface MultiParameterBody {
 
     /**
      * {@link #name()} 的别名
+     * }
      */
     String value() default "";
 

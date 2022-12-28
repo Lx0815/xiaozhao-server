@@ -45,16 +45,12 @@ public class ResponseObjectPool extends AbstractPool<ResponseObject> {
         return createResponse(code, null, message);
     }
 
-    public ResponseObject createResponse(ResponseCode code, Object data) {
-        return createResponse(code, data, code.getDescription());
-    }
-
     public ResponseObject createResponse(ResponseCode code, Object data, String message) {
         return super.borrowObject().setCode(code).setData(data).setMessage(message);
     }
 
-    public ResponseObject createSuccessResponse(String message) {
-        return createResponse(SUCCESS, message);
+    public ResponseObject createSuccessResponse(Object data, String message) {
+        return createResponse(SUCCESS, data, message);
     }
 
     public ResponseObject createSuccessResponse(Object data) {

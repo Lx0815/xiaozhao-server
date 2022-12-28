@@ -50,8 +50,8 @@ public class QiNiuConfig {
      * 构建一个七牛上传工具实例
      */
     @Bean
-    public UploadManager uploadManager() {
-        return new UploadManager(qiNiuConfiguration());
+    public UploadManager uploadManager(com.qiniu.storage.Configuration configuration) {
+        return new UploadManager(configuration);
     }
 
     /**

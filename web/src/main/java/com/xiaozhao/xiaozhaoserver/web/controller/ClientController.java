@@ -1,10 +1,14 @@
 package com.xiaozhao.xiaozhaoserver.web.controller;
 
 import com.tencentcloudapi.iai.v20200303.models.DetectFaceRequest;
+import com.tencentcloudapi.iai.v20200303.models.SearchPersonsRequest;
 import com.xiaozhao.xiaozhaoserver.common.constants.Constants;
 import com.xiaozhao.xiaozhaoserver.model.Client;
+import com.xiaozhao.xiaozhaoserver.model.PersonGroup;
 import com.xiaozhao.xiaozhaoserver.model.TestRecord;
 import com.xiaozhao.xiaozhaoserver.service.ClientService;
+import com.xiaozhao.xiaozhaoserver.service.PersonGroupService;
+import com.xiaozhao.xiaozhaoserver.service.UserService;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
 import com.xiaozhao.xiaozhaoserver.web.response.ResponseCode;
 import com.xiaozhao.xiaozhaoserver.web.response.ResponseObject;
@@ -39,6 +43,12 @@ public class ClientController {
     @Autowired
     private ResponseObjectPool responseObjectPool;
 
+    @Autowired
+    private PersonGroupService personGroupService;
+
+    @Autowired
+    private UserService userService;
+
     @ApiOperation("初始化人员库")
     @PostMapping("/person_group")
     public Object initPersonGroup(@RequestBody Client client, HttpServletRequest request,
@@ -61,7 +71,7 @@ public class ClientController {
         cookie.setMaxAge(Constants.PERSON_GROUP_ID_COOKIE_MAX_AGE);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return responseObjectPool.createSuccessResponse("初始化成功");
+        return responseObjectPool.createSuccessResponse(null, "初始化成功");
     }
 
     @ApiOperation("添加人员")
@@ -86,6 +96,29 @@ public class ClientController {
         TestRecord testRecord = clientService.analyzeAndSaveFaceInformation(detectFaceRequest, client, personGroupId);
 
         return responseObjectPool.createSuccessResponse(testRecord);
+    }
+
+    @PostMapping("/analyze/location/{longitude}/{latitude}")
+    public Object miniProgramAnalyzeAndSaveFaceInformation(@RequestBody DetectFaceRequest detectFaceRequest,
+                                                           @PathVariable Double longitude,
+                                                           @PathVariable Double latitude,
+                                                           Integer userId) {
+
+
+        // 查找最近的一个人员库
+        Client client = clientService.findMinDistanceClient(longitude, latitude);
+
+        // 获取人员库ID
+        PersonGroup personGroup = personGroupService.getById(client.getPersonGroupId());
+
+        // 人脸检测与分析
+        TestRecord testRecord = clientService.analyzeAndSaveFaceInformation(detectFaceRequest, client, personGroup.getGroupId());
+
+        // 合并用户信息
+        SearchPersonsRequest searchPersonsRequest = new SearchPersonsRequest();
+        searchPersonsRequest.setImage(detectFaceRequest.getImage());
+        userService.bindWechatAndPerson(searchPersonsRequest, longitude, latitude, userId);
+        return testRecord;
     }
 
     @GetMapping("/location/longitude/{longitude}/latitude/{latitude}/distance/{distance}")

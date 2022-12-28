@@ -30,7 +30,7 @@ public class TestRecordController {
     @Autowired
     private ResponseObjectPool responseObjectPool;
 
-    @GetMapping("/count/")
+    @GetMapping("/count")
     public Object getTestCount(Integer userId) {
         Integer count = testRecordService.selectCountById(userId);
         return responseObjectPool.createSuccessResponse(count);
@@ -38,7 +38,6 @@ public class TestRecordController {
 
     @GetMapping("/days/{day}")
     public Object getDaysAgo(@PathVariable Integer day, Integer userId) {
-
         List<TestRecord> testRecordList = testRecordService.listByDayScope(userId, day);
         return responseObjectPool.createSuccessResponse(testRecordList);
     }

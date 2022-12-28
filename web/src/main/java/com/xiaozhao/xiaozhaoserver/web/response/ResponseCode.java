@@ -31,7 +31,7 @@ public enum ResponseCode {
     /*
         B 类错误码来源于当前系统
      */
-    SERVER_EXCEPTION("B0000", Constants.SERVER_EXCEPTION);
+    SERVER_EXCEPTION("B0000", Constants.SERVER_EXCEPTION), NOT_LOGIN("A0103", Constants.NOT_LOGIN);
 
 
 

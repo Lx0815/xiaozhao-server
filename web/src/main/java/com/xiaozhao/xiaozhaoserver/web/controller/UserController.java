@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @description:
  * @author: Ding
@@ -46,13 +48,19 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public Object login(@RequestBody Code2SessionRequestProperties code2SessionRequestProperties) {
+    public Object login(@RequestBody Code2SessionRequestProperties code2SessionRequestProperties,
+                        HttpServletRequest request) {
         if (StringUtils.isBlank(code2SessionRequestProperties.getJs_code()))
             throw new BadParameterException("必填参数 js_code 为空");
         this.code2SessionRequestProperties.setJs_code(code2SessionRequestProperties.getJs_code());
         log.info(String.format("获取到 js_code：%s，准备登录", code2SessionRequestProperties.getJs_code()));
+        String token = request.getHeader(Constants.TOKEN_HEADER_KEY);
+        if (! StringUtils.isBlank(token)) {
+            log.info("近期已登录过，无需重复登录，token 为：" + token);
+            return responseObjectPool.createSuccessResponse(token);
+        }
         User user = wechatService.code2Session(this.code2SessionRequestProperties);
-        String token = JWTUtils.getToken(Constants.USER_ID_TOKEN_PAYLOAD_KEY, String.valueOf(user.getId()));
+        token = JWTUtils.getToken(Constants.USER_ID_TOKEN_PAYLOAD_KEY, String.valueOf(user.getId()));
         log.info(String.format("登录成功，用户信息：%s，生成的 token ：%s", user, token));
         return responseObjectPool.createSuccessResponse(token);
     }
