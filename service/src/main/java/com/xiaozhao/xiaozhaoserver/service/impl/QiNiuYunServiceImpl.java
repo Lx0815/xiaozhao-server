@@ -3,22 +3,23 @@ package com.xiaozhao.xiaozhaoserver.service.impl;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
-import com.qiniu.util.StringMap;
+import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import com.xiaozhao.xiaozhaoserver.service.configProp.QiNiuProperties;
 import com.xiaozhao.xiaozhaoserver.service.exception.BadParameterException;
-import com.xiaozhao.xiaozhaoserver.service.QiNiuYunService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @description:
@@ -53,27 +54,13 @@ public class QiNiuYunServiceImpl implements QiNiuYunService {
         this.qiNiuProperties = qiNiuProperties;
     }
 
-    // 定义七牛云上传的相关策略
-    private StringMap putPolicy;
-
-    private long expireSeconds = 3600;
-
     private static final BASE64Decoder decoder = new BASE64Decoder();
-
-    private static String uploadToken;
 
     /**
      * 获取上传凭证
      */
     private String getUploadToken() {
-        if (ObjectUtils.isEmpty(uploadToken)) {
-            if (Objects.isNull(putPolicy)) {
-                putPolicy = new StringMap();
-                putPolicy.put("returnBody", "{\"fileUrl\":\"" + qiNiuProperties.getDomain() + "$(key)\")}");
-            }
-            uploadToken = this.auth.uploadToken(qiNiuProperties.getBucket(), null, expireSeconds, putPolicy);
-        }
-        return uploadToken;
+        return auth.uploadToken(qiNiuProperties.getBucket());
     }
 
     /**

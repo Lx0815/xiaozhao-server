@@ -146,7 +146,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         log.info("准备更新 client");
         Client client = clientMapper.selectOne(new QueryWrapper<Client>().eq("person_group_id", personGroup.getId()));
         client.setLastUploadDateTime(LocalDateTime.now());
-        clientMapper.insert(client);
+        clientMapper.updateById(client);
         return client;
     }
 

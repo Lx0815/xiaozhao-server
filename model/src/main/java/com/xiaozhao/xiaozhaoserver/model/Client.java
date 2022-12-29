@@ -41,6 +41,7 @@ public class Client {
     private Double latitude;
 
     @ApiModelProperty("用户与客户端的距离")
+    @TableField(exist = false)
     private String distance;
 
     @ApiModelProperty("创建时间")

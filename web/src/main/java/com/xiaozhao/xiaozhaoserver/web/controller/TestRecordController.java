@@ -3,6 +3,7 @@ package com.xiaozhao.xiaozhaoserver.web.controller;
 import com.xiaozhao.xiaozhaoserver.model.TestRecord;
 import com.xiaozhao.xiaozhaoserver.service.TestRecordService;
 import com.xiaozhao.xiaozhaoserver.web.pool.ResponseObjectPool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ import java.util.List;
  * @createTime: 2022-12-17 19:34:49
  * @modify:
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/xiaozhao/test_record")
 public class TestRecordController {
